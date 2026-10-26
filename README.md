@@ -119,13 +119,24 @@ node scripts/update-prices.js --show-table
 
 Entirely opt-in — nothing is scheduled by installing the plugin.
 
+A marketplace install lives in a versioned cache directory, so first find it (from a clone, just use the clone and skip this):
+
 ```bash
-node scripts/schedule.js --install                       # Mondays at 08:00, last 7 days
-node scripts/schedule.js --install --day Friday --time 17:30 --days 7
-node scripts/schedule.js --status
-node scripts/schedule.js --run-now
-node scripts/schedule.js --uninstall
+# prints the installed plugin directory
+node -e "const fs=require('fs'),os=require('os'),p=require('path');const j=JSON.parse(fs.readFileSync(p.join(process.env.CLAUDE_CONFIG_DIR||p.join(os.homedir(),'.claude'),'plugins','installed_plugins.json'),'utf8'));for(const k of Object.keys(j.plugins||{}))if(k.startsWith('usage-tracker@'))for(const e of [].concat(j.plugins[k]))console.log(e.installPath)"
 ```
+
+Then, with `$PLUGIN` set to that path:
+
+```bash
+node "$PLUGIN/scripts/schedule.js" --install                 # Mondays at 08:00, last 7 days
+node "$PLUGIN/scripts/schedule.js" --install --day Friday --time 17:30 --days 7
+node "$PLUGIN/scripts/schedule.js" --status
+node "$PLUGIN/scripts/schedule.js" --run-now
+node "$PLUGIN/scripts/schedule.js" --uninstall
+```
+
+Install it from the *installed* directory rather than a clone, so the launcher records the installed path and re-resolves it after an update. You only do this once: the scheduled job survives plugin updates on its own.
 
 | Platform | Mechanism |
 |---|---|
