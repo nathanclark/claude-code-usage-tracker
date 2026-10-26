@@ -1,0 +1,11 @@
+{
+  "name": "usage-tracker",
+  "version": "0.1.0",
+  "description": "Logs your own Claude Code usage locally (skills, prompts, friction, tokens, rules) and reports on how to refine how you use it. Records full prompt text to a local file; nothing leaves the machine.",
+  "keywords": ["usage", "analytics", "hooks", "local", "privacy", "skills", "report"],
+  "author": {
+    "name": "nathanclark",
+    "url": "https://github.com/nathanclark"
+  },
+  "license": "MIT"
+}

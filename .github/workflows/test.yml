@@ -1,0 +1,67 @@
+name: test
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  hooks:
+    name: ${{ matrix.os }} / node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: ["18.x", "22.x"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Syntax-check every script
+        shell: bash
+        run: |
+          set -e
+          for f in lib/*.js scripts/*.js; do
+            node --check "$f"
+          done
+
+      - name: Check every JSON file parses
+        shell: bash
+        run: |
+          set -e
+          for f in package.json .claude-plugin/plugin.json .claude-plugin/marketplace.json hooks/hooks.json lib/prices.json; do
+            node -e "JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'))" "$f"
+            echo "ok $f"
+          done
+
+      - name: Plugin and marketplace names agree
+        shell: bash
+        run: |
+          node -e "
+            const fs = require('fs');
+            const p = JSON.parse(fs.readFileSync('.claude-plugin/plugin.json','utf8'));
+            const m = JSON.parse(fs.readFileSync('.claude-plugin/marketplace.json','utf8'));
+            const entry = (m.plugins || []).find(x => x.name === p.name);
+            if (!entry) { throw new Error('marketplace.json has no entry named ' + p.name); }
+            console.log('ok', p.name, '->', entry.source);
+          "
+
+      - name: Hook contract and report
+        run: node scripts/test-hooks.js
+
+      - name: Report degrades on an empty log directory
+        shell: bash
+        run: |
+          set -e
+          EMPTY="${RUNNER_TEMP}/empty-logs"
+          mkdir -p "$EMPTY"
+          CC_USAGE_LOG_DIR="$EMPTY" node lib/report.js --days 1 --out-dir "${RUNNER_TEMP}/empty-out" | tee out.txt
+          grep -q "EVENTS   : 0 " out.txt
+
+      - name: Scheduler help runs without touching the scheduler
+        run: node scripts/schedule.js

@@ -1,0 +1,15 @@
+{
+  "name": "claude-code-usage-tracker",
+  "description": "Local usage tracking and reporting for Claude Code",
+  "owner": {
+    "name": "nathanclark",
+    "url": "https://github.com/nathanclark/claude-code-usage-tracker"
+  },
+  "plugins": [
+    {
+      "name": "usage-tracker",
+      "source": "./",
+      "description": "Logs your own Claude Code usage locally and reports on how to refine how you use it"
+    }
+  ]
+}

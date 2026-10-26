@@ -1,0 +1,17 @@
+{
+  "name": "claude-code-usage-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local usage tracking and reporting for Claude Code, packaged as a plugin",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node scripts/test-hooks.js",
+    "report": "node lib/report.js",
+    "weekly": "node lib/weekly.js",
+    "schedule": "node scripts/schedule.js",
+    "prices": "node scripts/update-prices.js"
+  }
+}
