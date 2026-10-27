@@ -1,5 +1,7 @@
 # Claude Code usage tracker
 
+[![test](https://github.com/nathanclark/claude-code-usage-tracker/actions/workflows/test.yml/badge.svg)](https://github.com/nathanclark/claude-code-usage-tracker/actions/workflows/test.yml)
+
 A Claude Code plugin that logs how you actually use Claude Code, then reports on it — which skills and agents you use or ignore, what you keep asking for, where things go wrong, which projects consume the most, and which rules files are loading.
 
 > **Read this before installing.** This plugin **records the full text of every prompt you submit** to a plain-text file on your own disk (`~/.claude/usage-log/YYYY-MM-DD.jsonl`). That is the point: you cannot cluster "what do I keep asking for" out of prompt lengths. Nothing is ever sent anywhere — the tracker makes **no network calls of any kind**, has no telemetry and no update check — but anything you type into Claude Code, secrets included, ends up in that file. If that is not what you want, set `capture_prompt_text` to `false` (see [Configuration](#configuration)) and you still get every other section of the report.
@@ -21,7 +23,7 @@ One command, `/usage-tracker:report`, answers five questions from your own logs:
 Requires Node 18 or later (Claude Code itself runs on Node, so you almost certainly have it) and Claude Code with plugin support.
 
 ```bash
-claude plugin marketplace add <owner>/claude-code-usage-tracker
+claude plugin marketplace add nathanclark/claude-code-usage-tracker
 claude plugin install usage-tracker@claude-code-usage-tracker
 ```
 
